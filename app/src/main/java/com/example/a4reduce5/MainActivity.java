@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -27,33 +28,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        System.out.println("_______________Button Kürze wurde gedrückt");
-        EditText etZaehler = findViewById(R.id.etZaehler);
-        EditText etNenner = findViewById(R.id.etNenner);
+        try {
 
-        String szaehler = etZaehler.getText().toString();
-        String snenner = etNenner.getText().toString();
 
-        int iZaehler = Integer.parseInt(szaehler);
-        int iNenner = Integer.parseInt(snenner);
+            System.out.println("_______________Button Kürze wurde gedrückt");
+            EditText etZaehler = findViewById(R.id.etZaehler);
+            EditText etNenner = findViewById(R.id.etNenner);
 
-        if (iZaehler * iNenner != 0) {
-            int iRest, iggt = iZaehler,iDivisor = iNenner;
-            do{
+            String szaehler = etZaehler.getText().toString();
+            String snenner = etNenner.getText().toString();
+
+            int iZaehler = Integer.parseInt(szaehler);
+            int iNenner = Integer.parseInt(snenner);
+
+            if(iZaehler == iNenner )
+                throw new ReduceException("Zaehler und Nenner sind gleich", iZaehler, iNenner);
+//        if (iZaehler * iNenner != 0) {
+            int iRest, iggt = iZaehler, iDivisor = iNenner;
+            do {
                 iRest = iggt % iDivisor;
 
-                    iggt = iDivisor;
-                    iDivisor = iRest;
+                iggt = iDivisor;
+                iDivisor = iRest;
 
-            }while (iRest > 0);
-            etZaehler.setText(Integer.toString(iZaehler/iggt));
-            etNenner.setText(Integer.toString(iNenner/iggt));
-        }else{
-            etZaehler.setText("Ungültige Eingabe");
-            etNenner.setText("Ungültige Eingabe");
+            } while (iRest > 0);
+            etZaehler.setText(Integer.toString(iZaehler / iggt));
+            etNenner.setText(Integer.toString(iNenner / iggt));
+
+//        }else{
+//            etZaehler.setText("Ungültige Eingabe");
+//            etNenner.setText("Ungültige Eingabe");
+//        }
+
+        } catch (ReduceException e) {
+            System.out.println("_______________Reduce Exceptione");
+            AlertDialog alert = new AlertDialog.Builder(this).create();
+            alert.setTitle("Fehler");
+            alert.setMessage("Ungültige Were für Zähler und Nenner  " +
+                    e.getMessage()+ "\nZaehler : " + e.getiZaehler() + "\nNenner : " + e.getiNenner() + "\n");
+            alert.show();
+
+
+
+    } catch (Exception e) {
+            System.out.println("_______________Ungültige Eingabe");
+            AlertDialog alert = new AlertDialog.Builder(this).create();
+            alert.setTitle("Fehler");
+            alert.setMessage("Ungültige Eingabe\n Bitte Zahlen eingeben\nFehler : " +
+                    e.getMessage());
+            alert.show();
         }
-
-
 
     }
 }
